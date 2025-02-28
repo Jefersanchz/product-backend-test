@@ -27,7 +27,6 @@ pipeline {
         }
 
 
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t product-backend-test .'
