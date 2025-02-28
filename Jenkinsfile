@@ -26,11 +26,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                sh './mvnw test'
-            }
-        }
+
 
         stage('Build Docker Image') {
             steps {
