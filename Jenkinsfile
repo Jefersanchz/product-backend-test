@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'eclipse-temurin:17.0.12_7-jdk'
-            args '-v /tmp/maven:/root/.m2 -e MAVEN_CONFIG=/root/.m2'
-        }
-    }
+    agent any
 
     environment {
         SPRING_DATASOURCE_URL = "jdbc:mysql://mysql-db:3307/producto"
@@ -45,7 +40,13 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh 'docker run -d -p 9000:9000 --name product-backend-test -e SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL -e SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME -e SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD product-backend-test'
+                sh '''
+                docker run -d -p 9000:9000 --name product-backend-test \
+                -e SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL \
+                -e SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME \
+                -e SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD \
+                product-backend-test
+                '''
             }
         }
     }
