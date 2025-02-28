@@ -1,5 +1,11 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:latest'
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+            user 'root'
+        }
+    }
 
     environment {
         SPRING_DATASOURCE_URL = "jdbc:mysql://mysql-db:3307/producto"
@@ -32,6 +38,18 @@ pipeline {
             }
         }
 
+        stage('Remove Existing Container') {
+            steps {
+                script {
+                    sh '''
+                    if [ "$(docker ps -aq -f name=product-backend-test)" ]; then
+                        docker rm -f product-backend-test
+                    fi
+                    '''
+                }
+            }
+        }
+
         stage('Run Docker Container') {
             steps {
                 sh '''
@@ -40,7 +58,7 @@ pipeline {
                 -e SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL \
                 -e SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME \
                 -e SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD \
-                product-backend-test
+                product-backend-test-1
                 '''
             }
         }
