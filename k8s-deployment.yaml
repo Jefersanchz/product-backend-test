@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-backend
+  template:
+    metadata:
+      labels:
+        app: product-backend
+    spec:
+      containers:
+        - name: product-backend
+          image: jeferrin/product-backend-test:latest 
+          ports:
+            - containerPort: 9000
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-service:3306/producto"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "mypassword"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-backend-service
+spec:
+  selector:
+    app: product-backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9000
+      nodePort: 30090
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "mypassword"
+            - name: MYSQL_DATABASE
+              value: "producto"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service
+spec:
+  selector:
+    app: mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+  clusterIP: None

@@ -59,5 +59,25 @@ Para detener y eliminar el contenedor una vez que hayas terminado de probar el b
 ```bash
 docker-compose down
 ```
+## Paso 5: Desplegar en Kubernetes
 
 Este comando apagará y eliminará el contenedor.
+Paso 1: Crear los Archivos de Configuración YAML
+Aquí tienes los archivos YAML necesarios para desplegar tu aplicación en Kubernetes.
+Aplica los Archivos YAML
+Ejecuta los siguientes comandos para crear los deployments y servicios de la aplicación y de MySQL:
+
+## Paso 6: Desplegar en Kubernetes
+
+kubectl apply -f product-backend-deployment.yml
+kubectl apply -f product-backend-service.yml
+kubectl apply -f mysql-deployment.yml
+kubectl apply -f mysql-service.yml
+
+## Paso 6: Acceso al Backend desde Fuera del Clúster
+kubectl get svc product-backend-service
+minikube service product-backend-service --url
+
+## Paso 7: Acceso al Backend desde Fuera del Clústerkubectl 
+export-forward svc/product-backend-service 9000:80
+
