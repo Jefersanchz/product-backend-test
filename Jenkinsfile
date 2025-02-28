@@ -26,10 +26,9 @@ pipeline {
             }
         }
 
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t product-backend-test .'
+                sh 'docker build -t product-backend-test-1 .'
             }
         }
 
@@ -37,6 +36,7 @@ pipeline {
             steps {
                 sh '''
                 docker run -d -p 9000:9000 --name product-backend-test \
+                --network=host \
                 -e SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL \
                 -e SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME \
                 -e SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD \
